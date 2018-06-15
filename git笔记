@@ -1,0 +1,158 @@
+工作区（working directory）：就是你在电脑里能看到的目录。(add 之前在工作区，之后在暂存区，commit -m 之后在版本库)
+暂存区(stage)：英文叫stage, 或index。一般存放在 ".git目录下" 下的index文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。
+版本库(repository)：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库
+
+
+git 初始化:在需要进行版本控制的文件夹下，例如 d/phpstudy/PHPTutorial/WWW/gittest
+git init   （会生成一个.git的文件夹，也可以git init newrepo 相当于当前目录下创建了一个目录，并在创建的目录下初始化git）
+
+因为Git是分布式版本控制系统，所以，每个机器自报家门
+$ git config --global user.name "Your Name"
+$ git config --global user.email "email@example.com"
+也可以 git config --global --edit,后会进入到一个vim的编辑页面，然后修改里面的name和email
+
+也可以查询是否已经定义名字和邮箱了，如下：
+$ git config user.name
+$ git config user.email
+
+git add *  把工作区的所有文件添加到暂存区 (也可以写 git add 1.txt  把具体的某一个文件提交)
+git status 查询当前的文件/文件夹的提交状态
+git commit -m '写评论内容'  把暂存区的文件提交到本地版本库，并备注上评论
+
+
+
+版本日志和回退：
+git log  显示从近到远的提交日志历史
+git log --pretty=oneline  加上后面的参数，显示的是一行简短的信息，看到的一大串的数字加字母是commit id(版本号)，
+使用sha1计算出来的非常大的数字用十六位进制表示的，如下：
+ebafa4207514c35b8feb74514d2a0ac386f63552 (HEAD -> master) modify
+b6b2aa69491f7b1d65e574f45570f73b1306c7a4 测试3
+3c9626c6caec0e889bda25b9800237f82e55fed2 测试
+HEAD表示当前的版本，也就是当前最新提交的，上一个版本就是HEAD^ 上上一个版本HEAD^^ ,如果往上很多，可以写成HEAD~100，例如下：
+
+git reset --hard HEAD^ 上一个版本
+此时再用git log会发现版本回到上一个之后，之前的那个没有了，如果还想回到那个版本，只要git窗口命令还没关，就可以重新设置，如下:
+git reset --hard ebafa420 执行命令后就会回到想要的版本
+git reflog 显示从近到远的命令日志历史，如果命令窗口关了可以用此查看命令历史找到之前命令的版本号，再回到想要的版本号
+
+小结：
+HEAD指向的版本就是当前版本，因此，Git允许我们在版本的历史之间穿梭，使用命令git reset --hard commit_id。
+穿梭前，用git log可以查看提交历史，以便确定要回退到哪个版本。
+要重返未来，用git reflog查看命令历史，以便确定要回到未来的哪个版本
+
+
+
+------删除 
+$ git rm 2.txt
+-----删除之后查询状态是绿色的，只提交即可commit   ，如果是直接从文件夹里面删除的，查询状态时是红色的，需要先add再commit
+
+ 3 files changed, 0 insertions(+), 0 deletions(-) 表示3个新创建，0个修改，0个删除
+ create mode 100644 2.txt
+ create mode 100644 3.txt
+ create mode 100644 4.txt
+
+
+推到远程仓库，例如码云
+可以先链接到远程仓库，下面是链接到了远程仓库，且命名为origin
+$ git remote add origin https://gitee.com/vitowan/test.git
+查询当前连接的是哪个远程地址
+$ git remote -v
+为远程仓库重命名
+Git remote rename origin test
+从远程仓库退出
+Git remote rm origin
+ 把本地内容推送到命名为origin的仓库链接，master意思版本，默认是master
+$ git push origin master 
+
+克隆一个项目到demo目录里面，目录名不写会默认为原目录名字
+$ git clone https://gitee.com/vitowan/test1.git demo
+$ git clone https://gitee.com/vitowan/demo1.git ../demo2 //也可以用相对路径，上一级的demo2下面
+
+
+
+Git中从远程的分支获取最新的版本到本地有这样2个命令：Git fetch 和 git pull
+ fetch：相当于是从远程获取最新版本到本地，不会自动merge
+用法：git fetch origin master
+Git log -p origin master //git diff origin master
+Git merge origin master
+以上含义：先从远程的origin的master主分支上下载最新的版本到本地分支，然后比较本地master分支和远程的差别，最后进行合并
+
+Pull相当于从远程获得最新的版本并直接merge到本地：git pull origin master,相当于git fetch 和git merge 
+在实际开发中git fetch 更安全，因为在merge前，我们可查看更新情况，再考虑是否合并
+
+如果想想加入到别人的开源项目，先fork过来后，再更改，然后pull request，之后pull的请求会到开源作者那边，通过后会合并到一块。  分支也可以整合到master里面，也是pull request的方法，把branch分支pull到master里面。反过来master里面也可pull到分支里面
+
+日志查看和版本切换
+Git log 显示详细的版本更改的日志信息
+$ git log --pretty=oneline  //每个版本更改的信息单行显示：显示有本版号和更改时写的备注信息
+$ git reset --hard HEAD^^  //强制切换版本到第二个版本，HEAD代表当前最新/最近的版本，从最近的版本开始算的第二个 HEAD^^同理是第三个
+$ git reset --hard fcaf //切换版本库也可以用版本号的前4位数进行区别切换到哪个
+
+
+$ git reflog 显示的操作git的日志信息，不仅包含了版本更改信息，还包含了git操作信息，例如切换版本的操作，然后可以再用上面的版本切换方式进行切换还原
+
+
+分支：
+创建一个分支名字叫为wechat：  $ git branch wechat   此时分支跟master原分支里面内容一样
+
+查看本地分支:git branch ,显示如下
+* master
+  Wechat
+查看本地连远程的分支：  $ git branch -a 如下显示
+  master
+* wechat
+  remotes/demo1/master
+
+型号对着master且颜色绿色说明正在编辑的分支是master的
+
+转换分支：git checkout wechat, 此时查看分支 git branch，显示如下
+  master
+* wechat
+
+此时编辑wechat分支里面的信息，master里面的文件不会变化
+编辑好wechat分支的文件后，测试没问题后需合并到master主分支如下：
+先进入到主分支：git checkout master
+再合并操作：git merge wechat
+
+此时如果需要另外一个分支，也可以再建另外一个例如ali    git branch ali
+编辑好之后同样同上方式可以提交，如果wechat分支的合并是在branch分支之前，且两个分支都修改了同一个文件，在提交后会提示冲突，此时进入冲突的文件，进行修改，删除提示符保留两者信息，或选择一个信息保留，然后add,commit 
+
+
+
+
+恢复被删除的分支:
+Git会自行负责分支的管理，所以当我们删除一个分支时，Git只是删除了指向相关提交的指针，但该提交对象依然会留在版本库中。
+因此，如果我们知道删除分支时的散列值，就可以将某个删除的分支恢复过来。在已知提交的散列值的情况下恢复某个分支：
+
+git branch <branch_name> <hash_val>
+
+如果我们不知道想要恢复的分支的散列值，可以用reflog命令将它找出来。
+reflog命令：
+显示整个本地仓储的commit，包括所有branch的commit，甚至包括已经撤销的commit。
+只要HEAD发生了变化， 就会在reflog里面看得到。
+这时恢复分支a_branch分支如下：
+$ git branch ali HEAD@{10}  //10是带有分支信息的最后一个
+
+推到远程分支上：
+可只推主分支，或者只推其它分支，或者挨个都推
+先查下远程的是哪个：git remote -v    //例如查询到的是demo1
+先进入要推的分支: git checkout master   //进入到了master分支
+然后push:   git push demo1 master   //把本地的master 推到了远程的master上
+
+如果想推其它分支到远程，跟上面方式一样，先进入当前要推的分支checkout，再push到远程对应的分支名git push demo1 wechat
+
+Git log 和git reflog的区别
+log命令可以显示所有提交过的版本信息。git log
+如果觉得信息显示太繁琐  可以加上参数  --pretty=oneline[只会留下commit  id (版本号 (用SHA1字串表示))和 提交版本时的描述信息]    git log --pretty=oneline
+　如果在回退以后又想再次回到之前的版本，git reflog 可以查看所有分支的所有操作记录（包括commit和reset的操作），包括已经被删除的commit记录，git log则不能察看已经删除了的commit记录
+
+
+
+
+
+
+
+
+
+
+
