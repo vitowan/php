@@ -2,6 +2,11 @@
 暂存区(stage)：英文叫stage, 或index。一般存放在 ".git目录下" 下的index文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。
 版本库(repository)：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库
 
+工作区->暂存区->版本库
+工作区（本地，此时查询状态颜色是红色）-》暂存区（add之后在这里，此时查询状态是new file绿色的,如果是更改后add的会显示modified也是绿色的）-》版本库（commit后在这里，此时查询状态nothing to commit, working tree clean说明提交完成）
+
+------当每次更改时也必须git add 和git commit -m ‘’ 添加和提交一遍
+
 
 git 初始化:在需要进行版本控制的文件夹下，例如 d/phpstudy/PHPTutorial/WWW/gittest
 git init   （会生成一个.git的文件夹，也可以git init newrepo 相当于当前目录下创建了一个目录，并在创建的目录下初始化git）
