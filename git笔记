@@ -15,7 +15,7 @@ $ git config --global user.email "email@example.com"
 $ git config user.name
 $ git config user.email
 
-git add *  把工作区的所有文件添加到暂存区 (也可以写 git add 1.txt  把具体的某一个文件提交)
+git add .  把工作区的所有文件添加到暂存区 (也可以写 git add 1.txt  把具体的某一个文件提交)
 git status 查询当前的文件/文件夹的提交状态
 git commit -m '写评论内容'  把暂存区的文件提交到本地版本库，并备注上评论
 
